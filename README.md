@@ -1,1 +1,1 @@
-# gpsd-user-mgmt-svc
+# GPSD User Management Service
