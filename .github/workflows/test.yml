@@ -1,0 +1,50 @@
+name: Run Go Tests (TDD)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  test:
+    name: Run Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.23.5"
+
+      - name: Verify Go installation
+        run: go version
+
+      - name: Enable Go Modules
+        run: |
+          echo "GO111MODULE=on" >> $GITHUB_ENV
+          echo "PATH=$(go env GOPATH)/bin:$PATH" >> $GITHUB_ENV
+
+      - name: Change to the correct directory
+        run: cd ${{ github.workspace }}
+
+      - name: List project files (Debugging)
+        run: ls -la ${{ github.workspace }}
+
+      - name: Ensure go.mod exists
+        run: test -f go.mod || (echo "go.mod is missing!"; exit 1)
+
+      - name: Install dependencies
+        run: go mod tidy
+        working-directory: ${{ github.workspace }}
+
+      - name: Run tests
+        run: go test -v ./tests
+        working-directory: ${{ github.workspace }}
