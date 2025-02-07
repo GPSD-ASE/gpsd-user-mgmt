@@ -1,11 +1,14 @@
+IMAGE_NAME = gpsd/gpsd-user-mgmt
+TAG ?= latest  # If no tag is provided, default to 'latest'
+
 build-image:
-	docker build -f docker/Dockerfile -t gpsd/gpsd-user-mgmt:v1 .
+	docker build -f docker/Dockerfile -t $(IMAGE_NAME):$(TAG) .
 
 push-image:
-	docker push gpsd/gpsd-user-mgmt:v1
+	docker push $(IMAGE_NAME):$(TAG)
 
 run-image:
-	docker run -p 5500:5500 -it gpsd/gpsd-user-mgmt:v1
+	docker run -p 5500:5500 -it $(IMAGE_NAME):$(TAG)
 
 clean-image:
 	docker rmi $(docker images --filter "dangling=true" -q) -f

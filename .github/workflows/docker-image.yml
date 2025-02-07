@@ -1,0 +1,58 @@
+name: Docker Build, Push, Run using Makefile
+
+on:
+  push:
+    tags:
+      - 'v*'  # Runs when a new tag (e.g., v1.0.0) is pushed
+
+jobs:
+  docker_process:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the Code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Extract Git Tag for Versioning
+      - name: Extract Git Tag
+        id: tag
+        run: echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      # Step 3: Set up Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 4: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_KEY }}
+
+      # Step 5: Build Docker Image using Makefile and pass the tag
+      - name: Build Docker Image
+        run: make build-image TAG=${{ env.TAG_VERSION }}
+
+      # Step 6: Push Docker Image using Makefile
+      - name: Push Docker Image
+        run: make push-image TAG=${{ env.TAG_VERSION }}
+
+      # Step 7: Run Docker Container using Makefile
+      - name: Run Docker Container
+        run: make run-image TAG=${{ env.TAG_VERSION }}
+
+      # Step 8: Test Application with Curl
+      - name: Test Application with Curl
+        run: |
+          sleep 5  # Give the container some time to start
+          STATUS_CODE=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:5500)
+          if [[ "$STATUS_CODE" -ne 200 ]]; then
+            echo "Test Failed: Expected HTTP 200 but got $STATUS_CODE"
+            exit 1
+          fi
+          echo "Test Passed: Application is running successfully"
+
+      # Step 9: Stop the running container using Makefile
+      - name: Clean Docker Container
+        run: make clean-image
