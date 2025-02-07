@@ -8,7 +8,7 @@ push-image:
 	docker push $(IMAGE_NAME):$(TAG)
 
 run-image:
-    docker run -d -p 5500:5500 --name test_container $(IMAGE_NAME):$(TAG)
+	docker run -d -p 5500:5500 --name test_container $(IMAGE_NAME):$(TAG)
 
 clean-image:
     docker stop test_container || true
