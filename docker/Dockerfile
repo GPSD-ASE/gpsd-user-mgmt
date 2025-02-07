@@ -14,7 +14,7 @@ COPY ../ ./
 RUN ls -la
 
 # Build the Go application
-RUN go build -o gpsd-user-mgmt-svc /src/main.go
+RUN go build -o gpsd-user-mgmt-svc ./src/main.go
 
 # 🏗 Stage 2: Use Debian Bookworm (latest GLIBC version)
 FROM debian:bookworm
