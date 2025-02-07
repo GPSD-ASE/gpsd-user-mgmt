@@ -1,4 +1,4 @@
-IMAGE_NAME = gpsd/gpsd-user-mgmt
+IMAGE_NAME = gpsd/gpsd-user-mgmt-svc
 TAG ?= latest  # If no tag is provided, default to 'latest'
 
 build-image:
