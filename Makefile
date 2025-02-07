@@ -11,8 +11,8 @@ run-image:
 	docker run -d -p 5500:5500 --name test_container $(IMAGE_NAME):$(TAG)
 
 clean-image:
-    docker stop test_container || true
-    docker rm test_container || true
+	docker stop test_container || true
+	docker rm test_container || true
 
 build:
 	kubectl create namespace gpsd || true
