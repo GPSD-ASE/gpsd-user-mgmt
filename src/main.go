@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
+	//"fmt"
 	"gpsd-user-mgmt/src/user"
-	"os"
+	//"os"
 
 	"github.com/gin-gonic/gin"
 )

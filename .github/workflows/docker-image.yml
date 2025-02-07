@@ -43,15 +43,21 @@ jobs:
         run: make run-image TAG=${{ env.TAG_VERSION }}
 
       # Step 8: Test Application with Curl
-      - name: Test Application with Curl
+      - name: Ensure Application Starts and Test with Curl
         run: |
-          sleep 5  # Give the container some time to start
-          STATUS_CODE=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:5500)
-          if [[ "$STATUS_CODE" -ne 200 ]]; then
-            echo "Test Failed: Expected HTTP 200 but got $STATUS_CODE"
+            echo "Waiting for service to be available..."
+            for i in {1..10}; do  # Retry for up to 50s
+            STATUS_CODE=$(curl -o /dev/null -s -w "%{http_code}" http://localhost:5500 || echo "000")
+            if [[ "$STATUS_CODE" -eq 200 ]]; then
+                echo "Test Passed: Application is running successfully!"
+                exit 0
+            fi
+            echo "Waiting... ($i/10)"
+            sleep 5
+            done
+            echo "Test Failed: Service did not start in time"
+            docker logs test_container  # Debug logs
             exit 1
-          fi
-          echo "Test Passed: Application is running successfully"
 
       # Step 9: Stop the running container using Makefile
       - name: Clean Docker Container
