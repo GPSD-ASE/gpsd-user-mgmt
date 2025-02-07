@@ -41,12 +41,12 @@ func setupRouter() *gin.Engine {
 func main() {
 	router := setupRouter()
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		fmt.Println("Unable to read port")
-		return
-	}
-	address := fmt.Sprintf(":%s", port)
+	// port := os.Getenv("PORT")
+	// if port == "" {
+	// 	fmt.Println("Unable to read port")
+	// 	return
+	// }
+	// address := fmt.Sprintf(":%s", port)
 
-	router.Run(address)
+	router.Run(":5500")
 }
