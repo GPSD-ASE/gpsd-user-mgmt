@@ -8,10 +8,11 @@ push-image:
 	docker push $(IMAGE_NAME):$(TAG)
 
 run-image:
-	docker run -p 5500:5500 -it $(IMAGE_NAME):$(TAG)
+    docker run -d -p 5500:5500 --name test_container $(IMAGE_NAME):$(TAG)
 
 clean-image:
-	docker rmi $(docker images --filter "dangling=true" -q) -f
+    docker stop test_container || true
+    docker rm test_container || true
 
 build:
 	kubectl create namespace gpsd || true

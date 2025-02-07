@@ -11,8 +11,6 @@ RUN go mod tidy
 # Copy entire project
 COPY ../ ./
 
-RUN ls -la
-
 # Build the Go application
 RUN go build -o gpsd-user-mgmt-svc ./src/main.go
 
