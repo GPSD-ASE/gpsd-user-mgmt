@@ -46,7 +46,7 @@ func successList(r *router.Engine) func(*testing.T) {
 		var body map[string]interface{}
 		err := json.Unmarshal(w.Body.Bytes(), &body)
 		assert.NilError(t, err)
-		assert.Equal(t, int(body["limit"].(float64)), 2)
+		assert.Equal(t, int(body["limit"].(float64)), 15)
 		assert.Equal(t, int(body["offset"].(float64)), 0)
 
 		bodyUsers := body["users"].([]any)
@@ -136,7 +136,7 @@ func successListEmpty(r *router.Engine) func(*testing.T) {
 		var body map[string]interface{}
 		err := json.Unmarshal(w.Body.Bytes(), &body)
 		assert.Equal(t, err, nil)
-		assert.Equal(t, int(body["limit"].(float64)), 2)
+		assert.Equal(t, int(body["limit"].(float64)), 15)
 		assert.Equal(t, int(body["offset"].(float64)), 0)
 		assert.Equal(t, body["users"], nil)
 	}

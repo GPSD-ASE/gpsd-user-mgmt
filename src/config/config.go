@@ -17,8 +17,9 @@ type Config struct {
 
 func Load() *Config {
 	return &Config{
-		ENV:     os.Getenv("ENV"),
-		PORT:    os.Getenv("USER_PORT"),
+		ENV: os.Getenv("ENV"),
+		// PORT:    os.Getenv("USER_PORT"),
+		PORT:    "5500",
 		DB_NAME: os.Getenv("DB_NAME"),
 		DB_HOST: os.Getenv("DB_HOST"),
 		DB_PORT: os.Getenv("DB_PORT"),

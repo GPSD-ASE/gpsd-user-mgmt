@@ -40,7 +40,7 @@ func Get(c *gin.Context) {
 
 func List(c *gin.Context) {
 	var errorStrings []string
-	limit, err := strconv.Atoi(c.DefaultQuery("limit", "2"))
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "15"))
 	if err != nil {
 		errString := fmt.Sprintf("Improper limit parameter: %v", limit)
 		errorStrings = append(errorStrings, errString)
