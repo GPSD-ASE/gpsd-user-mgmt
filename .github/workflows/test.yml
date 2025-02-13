@@ -43,7 +43,7 @@ jobs:
 
       - name: Install dependencies
         run: go mod tidy
-        working-directory: ${{ github.workspace }}
+        working-directory: ${{ github.workspace }}/src
 
       - name: Run tests
         run: go test -v ./tests
