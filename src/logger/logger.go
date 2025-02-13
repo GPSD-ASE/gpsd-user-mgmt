@@ -1,18 +1,32 @@
 package logger
 
 import (
+	"gpsd-user-mgmt/config"
 	"log/slog"
 	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetupLogger() *slog.Logger {
+func SetupLogger(config *config.Config) *slog.Logger {
+	var lvl slog.Level
+	switch config.ENV {
+	case "PRODUCTION":
+		lvl = slog.LevelInfo
+	case "TEST":
+		lvl = slog.LevelWarn
+	default:
+		lvl = slog.LevelInfo
+	}
+
 	handler := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		AddSource: false,
+		Level:     lvl,
 	})
 
 	logger := slog.New(handler)
+
+	slog.SetDefault(logger)
 	return logger
 }
 

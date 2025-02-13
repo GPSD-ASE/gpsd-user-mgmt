@@ -3,7 +3,8 @@ package db
 import (
 	"context"
 	"fmt"
-	"gpsd-user-mgmt/src/config"
+	"gpsd-user-mgmt/config"
+	"log/slog"
 	"os"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -17,7 +18,8 @@ func Connect(config *config.Config) bool {
 		config.DB_PASS,
 		config.DB_HOST,
 		config.DB_PORT,
-		config.DB_NAME)
+		config.DB_NAME,
+	)
 
 	var err error
 	Pool, err = pgxpool.New(context.Background(), connString)
@@ -31,6 +33,34 @@ func Connect(config *config.Config) bool {
 func Close() {
 	if Pool != nil {
 		Pool.Close()
+	}
+}
+
+// For Testing
+const (
+	create_table = `CREATE TABLE IF NOT EXISTS users (
+		id SERIAL NOT NULL PRIMARY KEY,
+		name       varchar(40),
+		deviceID    int,
+		role 	   varchar(40),
+		createdAt timestamp,
+		updatedAt timestamp
+	);`
+
+	delete_users = "DELETE FROM users"
+)
+
+func CreateDatabase() {
+	_, err := Pool.Exec(context.Background(), create_table)
+	if err != nil {
+		slog.Error(err.Error())
+	}
+}
+
+func EmptyDatabase() {
+	_, err := Pool.Exec(context.Background(), delete_users)
+	if err != nil {
+		slog.Error(err.Error())
 	}
 }
 

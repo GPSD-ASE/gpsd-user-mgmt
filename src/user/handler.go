@@ -3,7 +3,9 @@ package user
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"strconv"
 
@@ -12,7 +14,13 @@ import (
 
 func Get(c *gin.Context) {
 	id := c.Param("id")
-	user, err := GetUser(id)
+	userId, err := strconv.Atoi(id)
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+	}
+	user, err := GetUser(userId)
 
 	if err != nil {
 		if errors.Is(err, NotFound{}) {
@@ -23,7 +31,7 @@ func Get(c *gin.Context) {
 		}
 
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Internal Server Error",
+			"error": err.Error(),
 		})
 		return
 	}
@@ -31,8 +39,27 @@ func Get(c *gin.Context) {
 }
 
 func List(c *gin.Context) {
-	limit := c.DefaultQuery("limit", "2")
-	offset := c.DefaultQuery("offset", "0")
+	var errorStrings []string
+	limit, err := strconv.Atoi(c.DefaultQuery("limit", "2"))
+	if err != nil {
+		errString := fmt.Sprintf("Improper limit parameter: %v", limit)
+		errorStrings = append(errorStrings, errString)
+		slog.Error(errString)
+	}
+
+	offset, err := strconv.Atoi(c.DefaultQuery("offset", "0"))
+	if err != nil {
+		errString := fmt.Sprintf("Improper offset parameter: %v", offset)
+		errorStrings = append(errorStrings, errString)
+		slog.Error(errString)
+	}
+
+	if len(errorStrings) != 0 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"errors": errorStrings,
+		})
+		return
+	}
 
 	users, err := GetUsers(limit, offset)
 	if err != nil {
@@ -82,7 +109,7 @@ func Edit(c *gin.Context) {
 	id := c.Param("id")
 	userId, err := strconv.Atoi(id)
 	if err != nil {
-		c.JSON(404, gin.H{
+		c.JSON(400, gin.H{
 			"error": err.Error(),
 		})
 	}
@@ -92,6 +119,7 @@ func Edit(c *gin.Context) {
 		c.JSON(400, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
 	var user User
@@ -100,11 +128,25 @@ func Edit(c *gin.Context) {
 		c.JSON(400, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
-	UpdateUser(userId, user)
-	user.Id = userId
+	err = UpdateUser(userId, user)
+	if err != nil {
+		if errors.Is(err, NotFound{}) {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
 
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	user.Id = userId
 	c.JSON(200, gin.H{
 		"message": "User updated successfully",
 		"user":    user,
@@ -118,9 +160,23 @@ func Delete(c *gin.Context) {
 		c.JSON(404, gin.H{
 			"error": err.Error(),
 		})
+		return
 	}
 
-	DeleteUser(userId)
+	err = DeleteUser(userId)
+	if err != nil {
+		if errors.Is(err, NotFound{}) {
+			c.JSON(http.StatusNotFound, gin.H{
+				"error": err.Error(),
+			})
+			return
+		}
+
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
 
 	c.JSON(200, gin.H{
 		"message": "User deleted successfully",

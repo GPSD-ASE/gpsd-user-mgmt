@@ -1,24 +1,82 @@
 package tests
 
 import (
-	"gpsd-user-mgmt/src/user"
-	"net/http"
-	"net/http/httptest"
+	"gpsd-user-mgmt/config"
+	"gpsd-user-mgmt/db"
+	"gpsd-user-mgmt/logger"
+	"gpsd-user-mgmt/router"
+	"math/rand"
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"gotest.tools/assert"
 )
 
-func TestPingRoute(t *testing.T) {
-	router := gin.Default()
+const USER_API = "/api/v1/users"
 
-	router.GET("/api/v1/list", user.List)
+func startApp() *router.Engine {
+	config := config.Load()
+	slogger := logger.SetupLogger(config)
+	ok := db.Connect(config)
+	if !ok {
+		slogger.Error("Failed to connect to database")
+	}
+	// db.CreateDatabase()
 
-	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/api/v1/list", nil)
-	router.ServeHTTP(w, req)
+	gin.SetMode(gin.TestMode)
+	r := router.SetupRouter(slogger)
+	return r
+}
 
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, "{\"abc\":\"123\",\"qwe\":\"121\",\"zxc\":\"134\"}", w.Body.String())
+func randomString(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, n)
+	for i := range b {
+		b[i] = letters[rand.Intn(len(letters))]
+	}
+	return string(b)
+}
+
+func TestGetUser(t *testing.T) {
+	r := startApp()
+
+	t.Run("GetUsers", func(t *testing.T) {
+		t.Run("Success", successGet(r))
+		t.Run("Success - No Users", notFoundGet(r))
+	})
+}
+
+func TestListUsers(t *testing.T) {
+	r := startApp()
+
+	t.Run("GetUsers", func(t *testing.T) {
+		t.Run("Success", successList(r))
+		t.Run("Success - Query Parameters", successListQuery(r))
+		t.Run("Success - No Users", successListEmpty(r))
+	})
+}
+
+func TestCreateUser(t *testing.T) {
+	r := startApp()
+
+	t.Run("GetUsers", func(t *testing.T) {
+		t.Run("Success", successCreate(r))
+	})
+}
+
+func TestUpdateUser(t *testing.T) {
+	r := startApp()
+
+	t.Run("GetUsers", func(t *testing.T) {
+		t.Run("Success", successUpdate(r))
+		t.Run("Success - No Users", notFoundUpdate(r))
+	})
+}
+
+func TestDeleteUser(t *testing.T) {
+	r := startApp()
+
+	t.Run("GetUsers", func(t *testing.T) {
+		t.Run("Success", successDelete(r))
+		t.Run("Success - No Users", notFoundDelete(r))
+	})
 }

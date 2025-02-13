@@ -2,15 +2,24 @@ package router
 
 import (
 	"fmt"
-	"gpsd-user-mgmt/src/config"
-	"gpsd-user-mgmt/src/logger"
-	"gpsd-user-mgmt/src/user"
+	"gpsd-user-mgmt/config"
+	"gpsd-user-mgmt/logger"
+	"gpsd-user-mgmt/user"
 	"log/slog"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func setupRouter(slogger *slog.Logger) *gin.Engine {
+type Engine struct {
+	router *gin.Engine
+}
+
+func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+	e.router.ServeHTTP(w, req)
+}
+
+func SetupRouter(slogger *slog.Logger) *Engine {
 	router := gin.New()
 
 	router.Use(logger.SlogMiddleware(slogger))
@@ -27,24 +36,25 @@ func setupRouter(slogger *slog.Logger) *gin.Engine {
 
 		v1.GET("/users/:id/incidents", func(c *gin.Context) {
 			c.JSON(200, gin.H{
-				"API": "edit",
+				"API": "Uninmplemented",
 			})
 		})
 
 	}
-	return router
+	return &Engine{router: router}
 }
 
-func Run(config *config.Config, slogger *slog.Logger) bool {
-	router := setupRouter(slogger)
+func Run(config *config.Config, slogger *slog.Logger) (*Engine, bool) {
+	router := SetupRouter(slogger)
 
 	address := fmt.Sprintf(":%s", config.PORT)
 
-	err := router.Run(address)
+	err := router.router.Run(address)
 	if err != nil {
 		slogger.Error("Unable to start server", "Error", err.Error())
+		return nil, false
 	}
 	slogger.Info("Starting server")
 
-	return err == nil
+	return router, true
 }

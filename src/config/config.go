@@ -5,7 +5,9 @@ import (
 )
 
 type Config struct {
-	PORT    string
+	ENV  string
+	PORT string
+
 	DB_NAME string
 	DB_HOST string
 	DB_PORT string
@@ -15,6 +17,7 @@ type Config struct {
 
 func Load() *Config {
 	return &Config{
+		ENV:     os.Getenv("ENV"),
 		PORT:    os.Getenv("USER_PORT"),
 		DB_NAME: os.Getenv("DB_NAME"),
 		DB_HOST: os.Getenv("DB_HOST"),
