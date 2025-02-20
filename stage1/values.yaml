@@ -1,0 +1,31 @@
+namespace: gpsd
+
+replicaCount: 1
+
+image:
+  repository: gpsd/gpsd-user-mgmt
+  tag: "latest"
+  pullPolicy: Always
+
+service:
+  - name: http
+    type: ClusterIP
+    port: 5500
+    targetPort: 5500
+
+env:
+  VAULT_ADDR: "https://152.53.124.121:8200"
+  VAULT_AUTH_METHOD: "kubernetes"
+  VAULT_ROLE: "gpsd-user-mgmt"
+
+serviceAccount:
+  create: true
+  name: gpsd-user-mgmt-sa
+
+resources: {}
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
