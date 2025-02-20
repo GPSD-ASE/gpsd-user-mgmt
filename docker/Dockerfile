@@ -1,5 +1,5 @@
 # 🏗 Stage 1: Build the Go Application
-FROM golang:1.23 AS builder
+FROM golang:1.24 AS builder
 
 WORKDIR /app
 
@@ -20,7 +20,7 @@ FROM debian:bookworm
 WORKDIR /app
 
 # Install necessary libraries including latest GLIBC
-RUN apt-get update && apt-get install -y ca-certificates libc6
+RUN apt-get update && apt-get install -y curl lsof net-tools ca-certificates libc6
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/gpsd-user-mgmt .
