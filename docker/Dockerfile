@@ -4,7 +4,7 @@ FROM golang:1.23 AS builder
 WORKDIR /app
 
 # Copy module files first (caching dependencies)
-COPY ../go.mod ../go.sum ./
+COPY ../src/go.mod ../src/go.sum ./
 
 RUN go mod tidy
 
