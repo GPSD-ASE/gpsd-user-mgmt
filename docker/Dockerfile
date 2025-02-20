@@ -20,7 +20,7 @@ FROM debian:bookworm
 WORKDIR /app
 
 # Install necessary libraries including latest GLIBC
-RUN apt-get update && apt-get install -y curl lsof net-tools ca-certificates libc6
+RUN apt-get update && apt-get install -y curl lsof net-tools ca-certificates libc6 iputils-ping
 
 # Copy the compiled binary from the builder stage
 COPY --from=builder /app/gpsd-user-mgmt .
