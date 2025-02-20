@@ -1,10 +1,10 @@
 package main
 
 import (
-	"gpsd-user-mgmt/config"
-	"gpsd-user-mgmt/db"
-	"gpsd-user-mgmt/logger"
-	"gpsd-user-mgmt/router"
+	"gpsd-user-mgmt/src/config"
+	"gpsd-user-mgmt/src/db"
+	"gpsd-user-mgmt/src/logger"
+	"gpsd-user-mgmt/src/router"
 	"os"
 )
 
