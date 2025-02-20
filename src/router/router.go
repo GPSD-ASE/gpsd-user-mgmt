@@ -2,9 +2,9 @@ package router
 
 import (
 	"fmt"
-	"gpsd-user-mgmt/config"
-	"gpsd-user-mgmt/logger"
-	"gpsd-user-mgmt/user"
+	"gpsd-user-mgmt/src/config"
+	"gpsd-user-mgmt/src/logger"
+	"gpsd-user-mgmt/src/user"
 	"log/slog"
 	"net/http"
 

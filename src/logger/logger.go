@@ -1,7 +1,7 @@
 package logger
 
 import (
-	"gpsd-user-mgmt/config"
+	"gpsd-user-mgmt/src/config"
 	"log/slog"
 	"os"
 

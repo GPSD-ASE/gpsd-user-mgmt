@@ -4,7 +4,7 @@ FROM golang:1.23 AS builder
 WORKDIR /app
 
 # Copy module files first (caching dependencies)
-COPY ../src/go.mod ../src/go.sum ./
+COPY go.mod go.sum ./
 
 RUN go mod tidy
 
@@ -12,7 +12,7 @@ RUN go mod tidy
 COPY ../ ./
 
 # Build the Go application
-RUN go build -o gpsd-user-mgmt ./src/main.go
+RUN go build -o gpsd-user-mgmt ./src
 
 # 🏗 Stage 2: Use Debian Bookworm (latest GLIBC version)
 FROM debian:bookworm

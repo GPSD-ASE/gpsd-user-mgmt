@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 	"errors"
-	"gpsd-user-mgmt/db"
+	"gpsd-user-mgmt/src/db"
 	"log"
 
 	"github.com/jackc/pgx/v5"
