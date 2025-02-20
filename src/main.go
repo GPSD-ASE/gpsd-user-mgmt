@@ -1,52 +1,29 @@
 package main
 
 import (
-	//"fmt"
-	"gpsd-user-mgmt/src/user"
-	//"os"
-
-	"github.com/gin-gonic/gin"
+	"gpsd-user-mgmt/config"
+	"gpsd-user-mgmt/db"
+	"gpsd-user-mgmt/logger"
+	"gpsd-user-mgmt/router"
+	"os"
 )
 
-func setupRouter() *gin.Engine {
-	router := gin.Default()
-
-	v1 := router.Group("/api/v1")
-	{
-		v1.GET("/list", user.List)
-		v1.POST("/create", user.Create)
-
-		v1.GET("/edit", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"API": "edit",
-			})
-		})
-
-		v1.GET("/signin", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"API": "signin",
-			})
-		})
-
-		v1.GET("/signout", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"API": "signout",
-			})
-		})
-	}
-
-	return router
-}
-
 func main() {
-	router := setupRouter()
+	config := config.Load()
+	slogger := logger.SetupLogger(config)
+	slogger.Info("Loaded configs")
 
-	// port := os.Getenv("PORT")
-	// if port == "" {
-	// 	fmt.Println("Unable to read port")
-	// 	return
-	// }
-	// address := fmt.Sprintf(":%s", port)
+	ok := db.Connect(config)
+	if !ok {
+		slogger.Error("Failed to connect to database")
+		os.Exit(1)
+	}
+	defer db.Close()
+	slogger.Info("Connected to database")
 
-	router.Run(":5500")
+	_, ok = router.Run(config, slogger)
+	if !ok {
+		slogger.Error("Failed to start server")
+		os.Exit(2)
+	}
 }
