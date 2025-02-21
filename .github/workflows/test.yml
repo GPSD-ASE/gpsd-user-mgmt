@@ -85,6 +85,18 @@ jobs:
         env:
           PGPASSWORD: password
 
+      - name: Create users table
+        run: |
+          psql -h localhost -U gpsd_user -d gpsd_db -c "
+            CREATE TABLE IF NOT EXISTS users (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(40),
+                deviceid INTEGER,
+                createdat TIMESTAMP,
+                updatedat TIMESTAMP,
+                role VARCHAR(50)
+            );"
+            
       - name: Run tests
         run: go test -v ./src/tests
         working-directory: ${{ github.workspace }}
