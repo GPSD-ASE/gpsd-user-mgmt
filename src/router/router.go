@@ -29,16 +29,12 @@ func SetupRouter(slogger *slog.Logger) *Engine {
 		v1.GET("/users", user.List)
 		v1.GET("/users/:id", user.Get)
 		v1.POST("/users", user.Create)
-
 		v1.PUT("/users/:id", user.Edit)
-
 		v1.DELETE("/users/:id", user.Delete)
 
-		v1.GET("/users/:id/incidents", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"API": "Uninmplemented",
-			})
-		})
+		v1.POST("/signin")
+		v1.POST("/signout")
+		v1.POST("/verify")
 
 	}
 	return &Engine{router: router}

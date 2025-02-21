@@ -3,9 +3,9 @@ package tests
 import (
 	"encoding/json"
 	"fmt"
-	"gpsd-user-mgmt/db"
-	"gpsd-user-mgmt/router"
-	"gpsd-user-mgmt/user"
+	"gpsd-user-mgmt/src/db"
+	"gpsd-user-mgmt/src/router"
+	"gpsd-user-mgmt/src/user"
 	"net/http"
 	"net/http/httptest"
 	"testing"
