@@ -40,6 +40,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Check if postgres is running
+        run: sudo systemctl start postgresql.service
+
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
