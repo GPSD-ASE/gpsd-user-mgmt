@@ -21,7 +21,7 @@ clean-image:
 	docker rmi $(docker images --filter "dangling=true" -q) -f
 
 helm:
-	helm upgrade --install demo ./stage1 --set image.tag=$(TAG) --namespace $(NAMESPACE)
+	helm upgrade --install demo ./helm --set image.tag=$(TAG) --namespace $(NAMESPACE)
 
 helm-uninstall:
 	helm uninstall demo -n $(NAMESPACE) 
