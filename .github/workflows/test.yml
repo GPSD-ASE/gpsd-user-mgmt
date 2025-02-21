@@ -60,12 +60,12 @@ jobs:
         run: ls -la ${{ github.workspace }}
 
       - name: Ensure go.mod exists
-        run: test -f ./src/go.mod || (echo "go.mod is missing!"; exit 1)
+        run: test -f ./go.mod || (echo "go.mod is missing!"; exit 1)
 
       - name: Install dependencies
         run: go mod tidy
-        working-directory: ${{ github.workspace }}/src
+        working-directory: ${{ github.workspace }}
 
       - name: Run tests
         run: go test -v ./tests
-        working-directory: ${{ github.workspace }}/src
+        working-directory: ${{ github.workspace }}
