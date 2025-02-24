@@ -1,17 +1,14 @@
 package tests
 
 import (
-	"gpsd-user-mgmt/config"
-	"gpsd-user-mgmt/db"
-	"gpsd-user-mgmt/logger"
-	"gpsd-user-mgmt/router"
-	"math/rand"
+	"gpsd-user-mgmt/src/config"
+	"gpsd-user-mgmt/src/db"
+	"gpsd-user-mgmt/src/logger"
+	"gpsd-user-mgmt/src/router"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 )
-
-const USER_API = "/api/v1/users"
 
 func startApp() *router.Engine {
 	config := config.Load()
@@ -25,15 +22,6 @@ func startApp() *router.Engine {
 	gin.SetMode(gin.TestMode)
 	r := router.SetupRouter(slogger)
 	return r
-}
-
-func randomString(n int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
-	b := make([]rune, n)
-	for i := range b {
-		b[i] = letters[rand.Intn(len(letters))]
-	}
-	return string(b)
 }
 
 func TestGetUser(t *testing.T) {
