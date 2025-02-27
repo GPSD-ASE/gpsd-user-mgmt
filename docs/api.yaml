@@ -1,0 +1,269 @@
+openapi: 3.0.0
+info:
+  title: User Management API
+  version: 1.0.0
+  description: API for managing users and user authentication actions.
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier for the user
+        name:
+          type: string
+          description: The user's name
+        email:
+          type: string
+          description: The user's email address
+        password:
+          type: string
+          description: The user's password (hashed)
+        deviceID:
+          type: string
+          description: The device ID associated with the user
+        role:
+          type: string
+          description: The user's role (e.g., "admin", "user")
+
+    SignInRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+
+    TokenResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        user:
+          $ref: "#/components/schemas/User"
+        token:
+          type: string
+
+    ErrorMsg:
+      type: object
+      properties:
+        message:
+          type: string
+
+paths:
+  /users:
+    get:
+      summary: List all users
+      operationId: listUsers
+      tags:
+        - Users
+      responses:
+        "200":
+          description: A list of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/User"
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+
+    post:
+      summary: Create a new user
+      operationId: createUser
+      tags:
+        - Users
+      requestBody:
+        description: The user object to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+
+  /users/{id}:
+    get:
+      summary: Get a specific user by ID
+      operationId: getUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to retrieve
+      responses:
+        "200":
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+
+    patch:
+      summary: Update an existing user by ID
+      operationId: updateUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to update
+      requestBody:
+        description: Fields to update for the user
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        "200":
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  user:
+                    $ref: "#/components/schemas/User"
+        "400":
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+
+    delete:
+      summary: Delete a user by ID
+      operationId: deleteUserById
+      tags:
+        - Users
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to delete
+      responses:
+        "200":
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+        "404":
+          description: User not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+
+  /signin:
+    post:
+      summary: Sign in a user
+      operationId: signIn
+      tags:
+        - Authentication
+      requestBody:
+        description: The credentials for user sign-in
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInRequest"
+      responses:
+        "200":
+          description: Signed in successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TokenResponse"
+        "400":
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+
+  /signout:
+    post:
+      summary: Sign out the current user
+      operationId: signOut
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: Signed out successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+
+  /verify:
+    post:
+      summary: Verify user identity
+      operationId: verifyUser
+      tags:
+        - Authentication
+      responses:
+        "200":
+          description: Valid token
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"
+        "403":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMsg"

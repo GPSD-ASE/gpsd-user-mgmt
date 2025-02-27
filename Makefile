@@ -1,6 +1,9 @@
 NAMESPACE = gpsd
 DEPLOYMENT = gpsd-user-mgmt
 IMAGE_NAME = $(NAMESPACE)/$(DEPLOYMENT)
+LOCAL_CHART_NAME = helm
+REMOTE_CHART_REPOSITORY = gpsd-ase.github.io
+SERVICE_NAME = $(DEPLOYMENT)
 TAG ?= latest  # If no tag is provided, default to 'latest'
 
 # Use `make develop` for local testing
@@ -30,3 +33,16 @@ clean:
 	kubectl delete all --all -n $(NAMESPACE)  || true
 	kubectl delete namespace $(NAMESPACE)  || true
 	sleep 2
+
+gh-pages-publish:
+	@echo "Publishing Helm chart for $(SERVICE_NAME) to GitHub Pages..."
+	rm -rf /tmp/gpsd-* /tmp/index.yaml
+	helm package ./$(LOCAL_CHART_NAME) -d /tmp
+	helm repo index /tmp --url https://$(REMOTE_CHART_REPOSITORY)/$(SERVICE_NAME)/ --merge /tmp/index.yaml
+	git checkout gh-pages
+	cp  /tmp/$(SERVICE_NAME)-0.1.0.tgz /tmp/index.yaml .
+	git add .
+	git commit -m "fix: commit to update GitHub Pages"
+	git push origin gh-pages -f
+	sleep 30
+	curl -k https://$(REMOTE_CHART_REPOSITORY)/$(SERVICE_NAME)/index.yaml
