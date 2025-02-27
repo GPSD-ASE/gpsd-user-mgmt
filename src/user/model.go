@@ -22,24 +22,24 @@ type User struct {
 }
 
 const (
-	REPORTER = iota
+	REPORTER = iota + 1
 	ADMIN
 )
 
 const (
 	get_user = `SELECT user_id, user_name, email, device_id, role_name
 				FROM public.user
-				JOIN user_role ON public.user.role_id = user_role.role_id
+				JOIN public.user_role ON public.user.role_id = public.user_role.role_id
 				WHERE user_id = $1`
 
 	get_user_from_name = `SELECT user_id, user_name, email, password_hash, device_id, role_name
 				FROM public.user
-				JOIN user_role ON public.user.role_id = user_role.role_id
+				JOIN public.user_role ON public.user.role_id = public.user_role.role_id
 				WHERE user_name = $1`
 
 	get_users = `SELECT user_id, user_name, email, device_id, role_name
 				FROM public.user
-				JOIN user_role ON public.user.role_id = user_role.role_id
+				JOIN public.user_role ON public.user.role_id = public.user_role.role_id
 				LIMIT $1
 				OFFSET $2`
 
