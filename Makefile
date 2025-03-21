@@ -42,8 +42,7 @@ gh-pages-publish:
 	helm package ./$(CHART_DIRECTORY) -d /tmp
 	helm repo index /tmp --url https://$(REMOTE_CHART_REPOSITORY)/$(SERVICE_NAME)/ --merge /tmp/index.yaml
 	git checkout gh-pages
-	cp  $(LOCAL_CHART_NAME) .
-	$(LOCAL_INDEX_FILE) .
+	cp  $(LOCAL_CHART_NAME) $(LOCAL_INDEX_FILE) .
 	git add .
 	git commit -m "fix: commit to update GitHub Pages"
 	git push origin gh-pages -f
