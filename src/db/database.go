@@ -14,7 +14,7 @@ var Pool *pgxpool.Pool
 
 func Connect() bool {
 	connString := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s",
-		config.DB_USERNAME,
+		config.DB_USER,
 		config.DB_PASS,
 		config.DB_HOST,
 		config.DB_PORT,

@@ -10,12 +10,13 @@ import (
 )
 
 var (
-	ENV     string
-	DB_HOST string
-	DB_NAME string
-	DB_PORT string
-	DB_PASS string
-	DB_USER string
+	ENV                string
+	DB_HOST            string
+	DB_NAME            string
+	DB_PORT            string
+	DB_PASS            string
+	DB_USER            string
+	USER_MGMT_APP_PORT string
 )
 
 func LoadConfig() {
@@ -24,12 +25,13 @@ func LoadConfig() {
 		if err != nil {
 			log.Printf("Error loading secrets from Vault: %v", err)
 		} else {
+			ENV = getString(vaultSecrets, "ENV", os.Getenv("ENV"))
 			DB_HOST = getString(vaultSecrets, "DB_HOST", os.Getenv("DB_HOST"))
 			DB_NAME = getString(vaultSecrets, "DB_NAME", os.Getenv("DB_NAME"))
 			DB_PORT = getString(vaultSecrets, "DB_PORT", os.Getenv("DB_PORT"))
 			DB_PASS = getString(vaultSecrets, "DB_PASS", os.Getenv("DB_PASS"))
 			DB_USER = getString(vaultSecrets, "DB_USER", os.Getenv("DB_USER"))
-			ENV = getString(vaultSecrets, "ENV", os.Getenv("ENV"))
+			USER_MGMT_APP_PORT = getString(vaultSecrets, "USER_MGMT_APP_PORT", os.Getenv("USER_MGMT_APP_PORT"))
 		}
 		log.Printf("DEBUG - All vault secrets : %v", vaultSecrets)
 	}
@@ -51,7 +53,10 @@ func LoadConfig() {
 	if ENV == "" {
 		ENV = os.Getenv("ENV")
 	}
-	if ENV == "" || DB_HOST == "" || DB_NAME == "" || DB_PORT == "" || DB_PASS == "" || DB_USER == "" {
+	if USER_MGMT_APP_PORT == "" {
+		USER_MGMT_APP_PORT = os.Getenv("USER_MGMT_APP_PORT")
+	}
+	if USER_MGMT_APP_PORT == "" || ENV == "" || DB_HOST == "" || DB_NAME == "" || DB_PORT == "" || DB_PASS == "" || DB_USER == "" {
 		log.Fatal("Missing environment variables")
 	}
 }

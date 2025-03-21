@@ -43,7 +43,7 @@ func SetupRouter(slogger *slog.Logger) *Engine {
 func Run(slogger *slog.Logger) (*Engine, bool) {
 	router := SetupRouter(slogger)
 
-	address := fmt.Sprintf(":%s", config.PORT)
+	address := fmt.Sprintf(":%s", config.USER_MGMT_APP_PORT)
 
 	err := router.router.Run(address)
 	if err != nil {
