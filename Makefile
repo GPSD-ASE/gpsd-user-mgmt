@@ -36,11 +36,11 @@ clean:
 
 gh-pages-publish:
 	@echo "Publishing Helm chart for $(SERVICE_NAME) to GitHub Pages..."
-	rm -rf /tmp/$(DEPLOYMENT)_$(TAG).tgz /tmp/index.yaml
+	rm -rf /tmp/$(DEPLOYMENT)-$(TAG).tgz /tmp/index.yaml
 	helm package ./$(LOCAL_CHART_NAME) -d /tmp
 	helm repo index /tmp --url https://$(REMOTE_CHART_REPOSITORY)/$(SERVICE_NAME)/ --merge /tmp/index.yaml
 	git checkout gh-pages
-	cp  /tmp/$(DEPLOYMENT)_$(TAG).tgz /tmp/index.yaml .
+	cp  /tmp/$(DEPLOYMENT)-$(TAG).tgz /tmp/index.yaml .
 	git add .
 	git commit -m "fix: commit to update GitHub Pages"
 	git push origin gh-pages -f
