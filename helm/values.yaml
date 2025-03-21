@@ -18,9 +18,7 @@ env:
   VAULT_ADDR: "http://vault.vault.svc.cluster.local:8200"
   VAULT_AUTH_METHOD: "kubernetes"
   VAULT_ROLE: "gpsd-user-mgmt"
-  PORT: "5500"
-  GRAPHHOPPER_URL: "https://graphhopper.com/api/1/route"
-  TOMTOM_URL: "https://api.tomtom.com/traffic/services/4/flowSegmentData/absolute/10/json"
+  USER_MGMT_PORT: "5500"
 
 serviceAccount:
   create: true

@@ -10,19 +10,12 @@ import (
 )
 
 var (
-	ENV             string
-	DB_URL          string
-	DB_HOST         string
-	DB_PORT         string
-	DB_NAME         string
-	DB_PASS         string
-	DB_USERNAME     string
-	JWT_SECRET      string
-	GRAPHHOPPER_KEY string
-	PORT            string
-	TOMTOM_API_KEY  string
-	GRAPHHOPPER_URL string
-	TOMTOM_URL      string
+	ENV     string
+	DB_HOST string
+	DB_NAME string
+	DB_PORT string
+	DB_PASS string
+	DB_USER string
 )
 
 func LoadConfig() {
@@ -31,49 +24,34 @@ func LoadConfig() {
 		if err != nil {
 			log.Printf("Error loading secrets from Vault: %v", err)
 		} else {
-			DB_URL = getString(vaultSecrets, "DATABASE_URL", os.Getenv("DATABASE_URL"))
-			JWT_SECRET = getString(vaultSecrets, "JWT_SECRET", os.Getenv("JWT_SECRET"))
-			DB_USERNAME = getString(vaultSecrets, "DATABASE_USERNAME", os.Getenv("DATABASE_USERNAME"))
-			DB_PASS = getString(vaultSecrets, "DATABASE_PASS", os.Getenv("DATABASE_PASS"))
-			GRAPHHOPPER_KEY = getString(vaultSecrets, "GRAPHHOPPER_KEY", os.Getenv("GRAPHHOPPER_KEY"))
-			PORT = getString(vaultSecrets, "PORT", os.Getenv("PORT"))
-			TOMTOM_API_KEY = getString(vaultSecrets, "TOMTOM_API_KEY", os.Getenv("TOMTOM_API_KEY"))
-			GRAPHHOPPER_URL = getString(vaultSecrets, "GRAPHHOPPER_URL", os.Getenv("GRAPHHOPPER_URL"))
-			TOMTOM_URL = getString(vaultSecrets, "TOMTOM_URL", os.Getenv("TOMTOM_URL"))
+			DB_HOST = getString(vaultSecrets, "DB_HOST", os.Getenv("DB_HOST"))
+			DB_NAME = getString(vaultSecrets, "DB_NAME", os.Getenv("DB_NAME"))
+			DB_PORT = getString(vaultSecrets, "DB_PORT", os.Getenv("DB_PORT"))
+			DB_PASS = getString(vaultSecrets, "DB_PASS", os.Getenv("DB_PASS"))
+			DB_USER = getString(vaultSecrets, "DB_USER", os.Getenv("DB_USER"))
+			ENV = getString(vaultSecrets, "ENV", os.Getenv("ENV"))
 		}
-		log.Printf("DEUBG - All vault secrets : %v", vaultSecrets)
+		log.Printf("DEBUG - All vault secrets : %v", vaultSecrets)
 	}
-	if DB_URL == "" {
-		DB_URL = os.Getenv("DATABASE_URL")
+	if DB_HOST == "" {
+		DB_HOST = os.Getenv("DB_HOST")
+	}
+	if DB_NAME == "" {
+		DB_NAME = os.Getenv("DB_NAME")
+	}
+	if DB_PORT == "" {
+		DB_PORT = os.Getenv("DB_PORT")
 	}
 	if DB_PASS == "" {
-		DB_PASS = os.Getenv("DATABASE_PASS")
+		DB_PASS = os.Getenv("DB_PASS")
 	}
-	if DB_USERNAME == "" {
-		DB_USERNAME = os.Getenv("DATABASE_USERNAME")
-	}
-	if JWT_SECRET == "" {
-		JWT_SECRET = os.Getenv("JWT_SECRET")
-	}
-	if GRAPHHOPPER_KEY == "" {
-		GRAPHHOPPER_KEY = os.Getenv("GRAPHHOPPER_KEY")
-	}
-	if PORT == "" {
-		PORT = os.Getenv("PORT")
-	}
-	if TOMTOM_API_KEY == "" {
-		TOMTOM_API_KEY = os.Getenv("TOMTOM_API_KEY")
-	}
-	if GRAPHHOPPER_URL == "" {
-		GRAPHHOPPER_URL = os.Getenv("GRAPHHOPPER_URL")
-	}
-	if TOMTOM_URL == "" {
-		TOMTOM_URL = os.Getenv("TOMTOM_URL")
+	if DB_USER == "" {
+		DB_USER = os.Getenv("DB_USER")
 	}
 	if ENV == "" {
 		ENV = os.Getenv("ENV")
 	}
-	if ENV == "" || DB_URL == "" || DB_PASS == "" || DB_USERNAME == "" || JWT_SECRET == "" || GRAPHHOPPER_KEY == "" || PORT == "" || TOMTOM_API_KEY == "" || GRAPHHOPPER_URL == "" || TOMTOM_URL == "" {
+	if ENV == "" || DB_HOST == "" || DB_NAME == "" || DB_PORT == "" || DB_PASS == "" || DB_USER == "" {
 		log.Fatal("Missing environment variables")
 	}
 }
@@ -94,7 +72,7 @@ func loadVaultSecrets() (map[string]interface{}, error) {
 	}
 	client.SetToken(token)
 
-	secret, err := client.KVv2("secret").Get(context.Background(), "gpsd/map-mgmt")
+	secret, err := client.KVv2("secret").Get(context.Background(), "gpsd/user-mgmt")
 	if err != nil {
 		return nil, fmt.Errorf("failed to read secret from vault: %w", err)
 	}
