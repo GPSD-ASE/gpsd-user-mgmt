@@ -22,8 +22,13 @@ type User struct {
 }
 
 const (
+<<<<<<< HEAD
 	REPORTER = 2
 	ADMIN    = 1
+=======
+	REPORTER = iota + 1
+	ADMIN
+>>>>>>> 592a712013d5fd17a7ccc3c818ff1885c5825e18
 )
 
 const (
