@@ -5,25 +5,54 @@ import (
 	"errors"
 	"gpsd-user-mgmt/src/db"
 	"log"
+	"log/slog"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
-	Id    int    `json:"id"`
-	Name  string `json:"name"`
-	DevID string `json:"devID"`
-	Role  string `json:"role"`
+	UserId       int    `json:"id"`
+	UserName     string `json:"name"`
+	Email        string `json:"email"`
+	PasswordHash string `json:"password"`
+	DeviceID     string `json:"deviceID"`
+	Role         string `json:"role"`
 }
 
 const (
-	get_user    = "SELECT id, name, deviceID, role FROM users WHERE id = $1"
-	get_users   = "SELECT id, name, deviceID, role FROM users LIMIT $1 OFFSET $2"
-	add_user    = "INSERT INTO users (name, role, deviceID, createdAt, updatedAt) VALUES ($1, $2, $3, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) RETURNING id"
-	update_user = "UPDATE users set name = $1, role = $2, updatedAt = CURRENT_TIMESTAMP WHERE id = $3"
-	delete_user = "DELETE FROM users WHERE id = $1"
+	REPORTER = 2
+	ADMIN    = 1
+)
 
-	GET_USER_INCIDENTS = "SELECT incidents.* FROM incidents JOIN user_incidents ON incidents.id = user_incidents.incident_id WHERE user_id = $1"
+const (
+	get_user = `SELECT user_id, user_name, email, device_id, role_name
+				FROM public.user
+				JOIN public.user_role ON public.user.role_id = public.user_role.role_id
+				WHERE user_id = $1`
+
+	get_user_from_name = `SELECT user_id, user_name, email, password_hash, device_id, role_name
+				FROM public.user
+				JOIN public.user_role ON public.user.role_id = public.user_role.role_id
+				WHERE user_name = $1`
+
+	get_users = `SELECT user_id, user_name, email, device_id, role_name
+				FROM public.user
+				JOIN public.user_role ON public.user.role_id = public.user_role.role_id
+				LIMIT $1
+				OFFSET $2`
+
+	add_user = `INSERT INTO public.user (user_name, email, password_hash, device_id, role_id)
+				VALUES ($1, $2, $3, $4, $5)
+				RETURNING user_id`
+
+	update_user = `UPDATE public.user
+				   SET user_name = $2, email = $3, device_id = $4, role_id = $5
+				   WHERE user_id = $1`
+
+	delete_user = `DELETE FROM public.user 
+				   WHERE user_id = $1`
 )
 
 func GetUser(id int) (User, error) {
@@ -31,9 +60,10 @@ func GetUser(id int) (User, error) {
 	row := db.Pool.QueryRow(context.Background(), get_user, id)
 
 	err := row.Scan(
-		&result.Id,
-		&result.Name,
-		&result.DevID,
+		&result.UserId,
+		&result.UserName,
+		&result.Email,
+		&result.DeviceID,
 		&result.Role,
 	)
 
@@ -47,17 +77,16 @@ func GetUser(id int) (User, error) {
 	return result, nil
 }
 
-func GetUserIncidents(id string) (User, error) {
+func GetUserFromName(name string) (User, error) {
 	var result User
-	row := db.Pool.QueryRow(context.Background(),
-		GET_USER_INCIDENTS,
-		id,
-	)
+	row := db.Pool.QueryRow(context.Background(), get_user_from_name, name)
 
 	err := row.Scan(
-		&result.Id,
-		&result.Name,
-		&result.DevID,
+		&result.UserId,
+		&result.UserName,
+		&result.Email,
+		&result.PasswordHash,
+		&result.DeviceID,
 		&result.Role,
 	)
 
@@ -75,15 +104,17 @@ func GetUsers(limit, offset int) ([]User, error) {
 	var result []User
 	rows, err := db.Pool.Query(context.Background(), get_users, limit, offset)
 	if err != nil {
+		slog.Error(err.Error())
 		return nil, err
 	}
 
 	for rows.Next() {
 		var user User
-		err = rows.Scan(
-			&user.Id,
-			&user.Name,
-			&user.DevID,
+		err := rows.Scan(
+			&user.UserId,
+			&user.UserName,
+			&user.Email,
+			&user.DeviceID,
 			&user.Role,
 		)
 		if err != nil {
@@ -97,16 +128,26 @@ func GetUsers(limit, offset int) ([]User, error) {
 }
 
 func AddUser(user User) (int, error) {
+	roleID := getRoleID(user.Role)
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.PasswordHash), bcrypt.DefaultCost)
+	if err != nil {
+		return -1, err
+	}
+	user.PasswordHash = string(hash)
+
 	row := db.Pool.QueryRow(
 		context.Background(),
 		add_user,
-		user.Name,
-		user.Role,
-		user.DevID,
+		user.UserName,
+		user.Email,
+		user.PasswordHash,
+		user.DeviceID,
+		roleID,
 	)
 
 	var userId int
-	err := row.Scan(
+	err = row.Scan(
 		&userId,
 	)
 
@@ -117,18 +158,46 @@ func AddUser(user User) (int, error) {
 	return userId, nil
 }
 
+func getRoleID(role string) int {
+	var roleID int
+	switch strings.ToLower(role) {
+	case "reporter":
+		roleID = REPORTER
+	case "admin":
+		roleID = ADMIN
+	default:
+		roleID = REPORTER
+	}
+	return roleID
+}
+
 func UpdateUser(userId int, user User) error {
-	_, err := GetUser(userId)
+	savedUser, err := GetUser(userId)
 	if err != nil {
 		return err
+	}
+	roleID := getRoleID(user.Role)
+
+	if user.Email == "" {
+		user.Email = savedUser.Email
+	}
+
+	if user.UserName == "" {
+		user.UserName = savedUser.UserName
+	}
+
+	if user.DeviceID == "" {
+		user.DeviceID = savedUser.DeviceID
 	}
 
 	_, err = db.Pool.Query(
 		context.Background(),
 		update_user,
-		user.Name,
-		user.Role,
 		userId,
+		user.UserName,
+		user.Email,
+		user.DeviceID,
+		roleID,
 	)
 
 	return err
@@ -137,6 +206,7 @@ func UpdateUser(userId int, user User) error {
 func DeleteUser(userId int) error {
 	_, err := GetUser(userId)
 	if err != nil {
+		slog.Error(err.Error())
 		return err
 	}
 	_ = db.Pool.QueryRow(

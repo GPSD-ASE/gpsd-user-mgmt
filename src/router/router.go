@@ -29,12 +29,12 @@ func SetupRouter(slogger *slog.Logger) *Engine {
 		v1.GET("/users", user.List)
 		v1.GET("/users/:id", user.Get)
 		v1.POST("/users", user.Create)
-		v1.PUT("/users/:id", user.Edit)
+		v1.PATCH("/users/:id", user.Edit)
 		v1.DELETE("/users/:id", user.Delete)
 
-		v1.POST("/signin")
-		v1.POST("/signout")
-		v1.POST("/verify")
+		v1.POST("/signin", user.SignIn)
+		v1.POST("/signout", user.SignOut)
+		v1.POST("/verify", user.Verify)
 
 	}
 	return &Engine{router: router}
