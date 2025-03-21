@@ -1,10 +1,10 @@
 # GPSD User Management Service
 
 # Required environment variables
-*	USER_PORT
-*	ENV
-*	DB_NAME
-*	DB_USER
-*	DB_PORT
-*	DB_HOST
-*	DB_PASS
+*	USER_MGMT_ENV
+*	USER_MGMT_DB_HOST
+*	USER_MGMT_DB_NAME
+*	USER_MGMT_DB_PORT
+*	USER_MGMT_DB_PASS
+*	USER_MGMT_DB_USER
+*	USER_MGMT_APP_PORT
