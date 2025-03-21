@@ -37,24 +37,31 @@ func LoadConfig() {
 	}
 	if DB_HOST == "" {
 		DB_HOST = os.Getenv("DB_HOST")
+		log.Printf("DEBUG - DB_HOST : %v", DB_HOST)
 	}
 	if DB_NAME == "" {
 		DB_NAME = os.Getenv("DB_NAME")
+		log.Printf("DEBUG - DB_NAME : %v", DB_NAME)
 	}
 	if DB_PORT == "" {
 		DB_PORT = os.Getenv("DB_PORT")
+		log.Printf("DEBUG - DB_PORT : %v", DB_PORT)
 	}
 	if DB_PASS == "" {
 		DB_PASS = os.Getenv("DB_PASS")
+		log.Printf("DEBUG - DB_PASS : %v", DB_PASS)
 	}
 	if DB_USER == "" {
 		DB_USER = os.Getenv("DB_USER")
+		log.Printf("DEBUG - DB_USER : %v", DB_USER)
 	}
 	if ENV == "" {
 		ENV = os.Getenv("ENV")
+		log.Printf("DEBUG - ENV : %v", ENV)
 	}
 	if USER_MGMT_APP_PORT == "" {
 		USER_MGMT_APP_PORT = os.Getenv("USER_MGMT_APP_PORT")
+		log.Printf("DEBUG - USER_MGMT_APP_PORT : %v", USER_MGMT_APP_PORT)
 	}
 	if USER_MGMT_APP_PORT == "" || ENV == "" || DB_HOST == "" || DB_NAME == "" || DB_PORT == "" || DB_PASS == "" || DB_USER == "" {
 		log.Fatal("Missing environment variables")
