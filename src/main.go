@@ -9,11 +9,11 @@ import (
 )
 
 func main() {
-	config := config.Load()
-	slogger := logger.SetupLogger(config)
+	config.LoadConfig()
+	slogger := logger.SetupLogger()
 	slogger.Info("Loaded configs")
 
-	ok := db.Connect(config)
+	ok := db.Connect()
 	if !ok {
 		slogger.Error("Failed to connect to database")
 		os.Exit(1)
@@ -21,7 +21,7 @@ func main() {
 	defer db.Close()
 	slogger.Info("Connected to database")
 
-	_, ok = router.Run(config, slogger)
+	_, ok = router.Run(slogger)
 	if !ok {
 		slogger.Error("Failed to start server")
 		os.Exit(2)

@@ -11,9 +11,9 @@ import (
 )
 
 func startApp() *router.Engine {
-	config := config.Load()
-	slogger := logger.SetupLogger(config)
-	ok := db.Connect(config)
+	config.LoadConfig()
+	slogger := logger.SetupLogger()
+	ok := db.Connect()
 	if !ok {
 		slogger.Error("Failed to connect to database")
 	}

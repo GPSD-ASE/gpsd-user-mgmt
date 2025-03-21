@@ -18,13 +18,13 @@ func successList(r *router.Engine) func(*testing.T) {
 	return func(t *testing.T) {
 
 		test_users := []user.User{{
-			Name:  "Test",
-			DevID: "123",
-			Role:  "reporter",
+			UserName: "Test",
+			DeviceID: "123",
+			Role:     "reporter",
 		}, {
-			Name:  "Test2",
-			DevID: "1234",
-			Role:  "reporter",
+			UserName: "Test2",
+			DeviceID: "1234",
+			Role:     "reporter",
 		},
 		}
 
@@ -54,9 +54,9 @@ func successList(r *router.Engine) func(*testing.T) {
 
 		for i := range len(bodyUsers) {
 			bodyUser := bodyUsers[i].(map[string]interface{})
-			assert.Equal(t, bodyUser["name"], test_users[i].Name)
+			assert.Equal(t, bodyUser["name"], test_users[i].UserName)
 			assert.Equal(t, bodyUser["role"], test_users[i].Role)
-			assert.Equal(t, bodyUser["devID"], test_users[i].DevID)
+			assert.Equal(t, bodyUser["devID"], test_users[i].DeviceID)
 		}
 	}
 }
@@ -65,21 +65,21 @@ func successListQuery(r *router.Engine) func(*testing.T) {
 	return func(t *testing.T) {
 
 		testUsers := []user.User{{
-			Name:  "Test",
-			DevID: "123",
-			Role:  "reporter",
+			UserName: "Test",
+			DeviceID: "123",
+			Role:     "reporter",
 		}, {
-			Name:  "Test2",
-			DevID: "1234",
-			Role:  "reporter",
+			UserName: "Test2",
+			DeviceID: "1234",
+			Role:     "reporter",
 		}, {
-			Name:  "Test3",
-			DevID: "103",
-			Role:  "reporter",
+			UserName: "Test3",
+			DeviceID: "103",
+			Role:     "reporter",
 		}, {
-			Name:  "Admin",
-			DevID: "123004",
-			Role:  "admin",
+			UserName: "Admin",
+			DeviceID: "123004",
+			Role:     "admin",
 		},
 		}
 
@@ -119,9 +119,9 @@ func successListQuery(r *router.Engine) func(*testing.T) {
 			bodyUser := bodyUsers[i].(map[string]interface{})
 
 			testUserIdx := i + query["offset"].(int)
-			assert.Equal(t, bodyUser["name"], testUsers[testUserIdx].Name)
+			assert.Equal(t, bodyUser["name"], testUsers[testUserIdx].UserName)
 			assert.Equal(t, bodyUser["role"], testUsers[testUserIdx].Role)
-			assert.Equal(t, bodyUser["devID"], testUsers[testUserIdx].DevID)
+			assert.Equal(t, bodyUser["devID"], testUsers[testUserIdx].DeviceID)
 		}
 	}
 }

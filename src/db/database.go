@@ -12,9 +12,9 @@ import (
 
 var Pool *pgxpool.Pool
 
-func Connect(config *config.Config) bool {
+func Connect() bool {
 	connString := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s",
-		config.DB_USER,
+		config.DB_USERNAME,
 		config.DB_PASS,
 		config.DB_HOST,
 		config.DB_PORT,
