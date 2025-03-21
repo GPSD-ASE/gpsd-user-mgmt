@@ -1,4 +1,4 @@
-TAG ?= 0.1.1  # If no tag is provided, default to 'latest'
+TAG ?= 0.1.2  # If no tag is provided, default to 'latest'
 NAMESPACE = gpsd
 DEPLOYMENT = gpsd-user-mgmt
 SERVICE_NAME = $(DEPLOYMENT)
