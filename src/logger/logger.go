@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupLogger(config *config.Config) *slog.Logger {
+func SetupLogger() *slog.Logger {
 	var lvl slog.Level
-	switch config.ENV {
+	switch config.USER_MGMT_ENV {
 	case "PRODUCTION":
 		lvl = slog.LevelInfo
 	case "TEST":
@@ -35,7 +35,7 @@ func SlogMiddleware(logger *slog.Logger) gin.HandlerFunc {
 		c.Next()
 		var params map[string][]string = c.Request.URL.Query()
 
-		logger.Info("Recieved payload",
+		logger.Info("Received payload",
 			slog.String("method", c.Request.Method),
 			slog.String("path", c.Request.URL.Path),
 			slog.Int("status", c.Writer.Status()),

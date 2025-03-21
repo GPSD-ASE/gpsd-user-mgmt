@@ -16,13 +16,13 @@ import (
 func successCreate(r *router.Engine) func(*testing.T) {
 	return func(t *testing.T) {
 		testUsers := []user.User{{
-			Name:  "Test",
-			DevID: "123",
-			Role:  "reporter",
+			UserName: "Test",
+			DeviceID: "123",
+			Role:     "reporter",
 		}, {
-			Name:  "Test2",
-			DevID: "1234",
-			Role:  "admin",
+			UserName: "Test2",
+			DeviceID: "1234",
+			Role:     "admin",
 		}}
 		defer db.EmptyDatabase()
 
@@ -46,9 +46,9 @@ func successCreate(r *router.Engine) func(*testing.T) {
 
 			userBody := body["user"].(map[string]interface{})
 
-			assert.Equal(t, userBody["name"], testUser.Name)
+			assert.Equal(t, userBody["name"], testUser.UserName)
 			assert.Equal(t, userBody["role"], testUser.Role)
-			assert.Equal(t, userBody["devID"], testUser.DevID)
+			assert.Equal(t, userBody["devID"], testUser.UserName)
 		}
 	}
 }

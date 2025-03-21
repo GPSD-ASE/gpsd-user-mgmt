@@ -12,13 +12,13 @@ import (
 
 var Pool *pgxpool.Pool
 
-func Connect(config *config.Config) bool {
+func Connect() bool {
 	connString := fmt.Sprintf("postgresql://%s:%s@%s:%s/%s",
-		config.DB_USER,
-		config.DB_PASS,
-		config.DB_HOST,
-		config.DB_PORT,
-		config.DB_NAME,
+		config.USER_MGMT_DB_USER,
+		config.USER_MGMT_DB_PASS,
+		config.USER_MGMT_DB_HOST,
+		config.USER_MGMT_APP_PORT,
+		config.USER_MGMT_DB_NAME,
 	)
 
 	var err error

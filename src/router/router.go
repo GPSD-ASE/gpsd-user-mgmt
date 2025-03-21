@@ -40,10 +40,10 @@ func SetupRouter(slogger *slog.Logger) *Engine {
 	return &Engine{router: router}
 }
 
-func Run(config *config.Config, slogger *slog.Logger) (*Engine, bool) {
+func Run(slogger *slog.Logger) (*Engine, bool) {
 	router := SetupRouter(slogger)
 
-	address := fmt.Sprintf(":%s", config.PORT)
+	address := fmt.Sprintf(":%s", config.USER_MGMT_APP_PORT)
 
 	err := router.router.Run(address)
 	if err != nil {

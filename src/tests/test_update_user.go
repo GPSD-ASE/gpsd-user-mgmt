@@ -19,31 +19,31 @@ import (
 func successUpdate(r *router.Engine) func(*testing.T) {
 	return func(t *testing.T) {
 		testUsers := []user.User{{
-			Name:  "Test",
-			DevID: "123",
-			Role:  "reporter",
+			UserName: "Test",
+			DeviceID: "123",
+			Role:     "reporter",
 		}, {
-			Name:  "Test2",
-			DevID: "1234",
-			Role:  "reporter",
+			UserName: "Test2",
+			DeviceID: "1234",
+			Role:     "reporter",
 		},
 		}
 
 		for i, _ := range testUsers {
 			id, _ := user.AddUser(testUsers[i])
-			testUsers[i].Id = id
+			testUsers[i].UserId = id
 		}
 		defer db.EmptyDatabase()
 
 		for i, _ := range testUsers {
-			testUsers[i].Name = randomString(30)
-			testUsers[i].DevID = strconv.Itoa(rand.Int())
+			testUsers[i].UserName = randomString(30)
+			testUsers[i].DeviceID = strconv.Itoa(rand.Int())
 		}
 
 		for _, testUser := range testUsers {
 			w := httptest.NewRecorder()
 			payload, _ := json.Marshal(testUser)
-			url := fmt.Sprintf("%s/%d", USER_API, testUser.Id)
+			url := fmt.Sprintf("%s/%d", USER_API, testUser.UserId)
 			req, _ := http.NewRequest(
 				"PUT",
 				url,
@@ -59,9 +59,9 @@ func successUpdate(r *router.Engine) func(*testing.T) {
 
 			userBody := body["user"].(map[string]interface{})
 
-			assert.Equal(t, userBody["name"], testUser.Name)
+			assert.Equal(t, userBody["name"], testUser.UserName)
 			assert.Equal(t, userBody["role"], testUser.Role)
-			assert.Equal(t, userBody["devID"], testUser.DevID)
+			assert.Equal(t, userBody["devID"], testUser.DeviceID)
 		}
 	}
 }
@@ -69,9 +69,9 @@ func successUpdate(r *router.Engine) func(*testing.T) {
 func notFoundUpdate(r *router.Engine) func(*testing.T) {
 	return func(t *testing.T) {
 		testUser := user.User{
-			Name:  "Test",
-			DevID: "123",
-			Role:  "reporter",
+			UserName: "Test",
+			DeviceID: "123",
+			Role:     "reporter",
 		}
 
 		w := httptest.NewRecorder()

@@ -16,25 +16,25 @@ import (
 func successGet(r *router.Engine) func(*testing.T) {
 	return func(t *testing.T) {
 		testUsers := []user.User{{
-			Name:  "Test",
-			DevID: "123",
-			Role:  "reporter",
+			UserName: "Test",
+			DeviceID: "123",
+			Role:     "reporter",
 		}, {
-			Name:  "Test2",
-			DevID: "1234",
-			Role:  "reporter",
+			UserName: "Test2",
+			DeviceID: "1234",
+			Role:     "reporter",
 		},
 		}
 
 		for i, _ := range testUsers {
 			id, _ := user.AddUser(testUsers[i])
-			testUsers[i].Id = id
+			testUsers[i].UserId = id
 		}
 		defer db.EmptyDatabase()
 
 		for _, testUser := range testUsers {
 			w := httptest.NewRecorder()
-			url := fmt.Sprintf("%s/%d", USER_API, testUser.Id)
+			url := fmt.Sprintf("%s/%d", USER_API, testUser.UserId)
 			req, _ := http.NewRequest(
 				"GET",
 				url,
@@ -47,9 +47,9 @@ func successGet(r *router.Engine) func(*testing.T) {
 			err := json.Unmarshal(w.Body.Bytes(), &body)
 			assert.NilError(t, err)
 
-			assert.Equal(t, body["name"], testUser.Name)
+			assert.Equal(t, body["name"], testUser.UserName)
 			assert.Equal(t, body["role"], testUser.Role)
-			assert.Equal(t, body["devID"], testUser.DevID)
+			assert.Equal(t, body["devID"], testUser.DeviceID)
 		}
 	}
 }
