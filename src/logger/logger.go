@@ -10,7 +10,7 @@ import (
 
 func SetupLogger() *slog.Logger {
 	var lvl slog.Level
-	switch config.ENV {
+	switch config.USER_MGMT_ENV {
 	case "PRODUCTION":
 		lvl = slog.LevelInfo
 	case "TEST":

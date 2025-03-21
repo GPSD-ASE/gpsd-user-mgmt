@@ -14,7 +14,7 @@ service:
     targetPort: 5500
 
 env:
-  ENV: "TEST"
+  USER_MGMT_ENV: "TEST"
   USER_MGMT_APP_PORT: "5500"
   VAULT_ADDR: "http://vault.vault.svc.cluster.local:8200"
   VAULT_AUTH_METHOD: "kubernetes"

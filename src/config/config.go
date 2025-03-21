@@ -10,12 +10,12 @@ import (
 )
 
 var (
-	ENV                string
-	DB_HOST            string
-	DB_NAME            string
-	DB_PORT            string
-	DB_PASS            string
-	DB_USER            string
+	USER_MGMT_ENV      string
+	USER_MGMT_DB_HOST  string
+	USER_MGMT_DB_NAME  string
+	USER_MGMT_DB_PORT  string
+	USER_MGMT_DB_PASS  string
+	USER_MGMT_DB_USER  string
 	USER_MGMT_APP_PORT string
 )
 
@@ -25,45 +25,38 @@ func LoadConfig() {
 		if err != nil {
 			log.Printf("Error loading secrets from Vault: %v", err)
 		} else {
-			ENV = getString(vaultSecrets, "ENV", os.Getenv("ENV"))
-			DB_HOST = getString(vaultSecrets, "DB_HOST", os.Getenv("DB_HOST"))
-			DB_NAME = getString(vaultSecrets, "DB_NAME", os.Getenv("DB_NAME"))
-			DB_PORT = getString(vaultSecrets, "DB_PORT", os.Getenv("DB_PORT"))
-			DB_PASS = getString(vaultSecrets, "DB_PASS", os.Getenv("DB_PASS"))
-			DB_USER = getString(vaultSecrets, "DB_USER", os.Getenv("DB_USER"))
+			USER_MGMT_ENV = getString(vaultSecrets, "USER_MGMT_ENV", os.Getenv("USER_MGMT_ENV"))
+			USER_MGMT_DB_HOST = getString(vaultSecrets, "USER_MGMT_DB_HOST", os.Getenv("USER_MGMT_DB_HOST"))
+			USER_MGMT_DB_NAME = getString(vaultSecrets, "USER_MGMT_DB_NAME", os.Getenv("USER_MGMT_DB_NAME"))
+			USER_MGMT_DB_PORT = getString(vaultSecrets, "USER_MGMT_DB_PORT", os.Getenv("USER_MGMT_DB_PORT"))
+			USER_MGMT_DB_PASS = getString(vaultSecrets, "USER_MGMT_DB_PASS", os.Getenv("USER_MGMT_DB_PASS"))
+			USER_MGMT_DB_USER = getString(vaultSecrets, "USER_MGMT_DB_USER", os.Getenv("USER_MGMT_DB_USER"))
 			USER_MGMT_APP_PORT = getString(vaultSecrets, "USER_MGMT_APP_PORT", os.Getenv("USER_MGMT_APP_PORT"))
 		}
 		log.Printf("DEBUG - All vault secrets : %v", vaultSecrets)
 	}
-	if DB_HOST == "" {
-		DB_HOST = os.Getenv("DB_HOST")
-		log.Printf("DEBUG - DB_HOST : %v", DB_HOST)
+	if USER_MGMT_DB_HOST == "" {
+		USER_MGMT_DB_HOST = os.Getenv("USER_MGMT_DB_HOST")
 	}
-	if DB_NAME == "" {
-		DB_NAME = os.Getenv("DB_NAME")
-		log.Printf("DEBUG - DB_NAME : %v", DB_NAME)
+	if USER_MGMT_DB_NAME == "" {
+		USER_MGMT_DB_NAME = os.Getenv("USER_MGMT_DB_NAME")
 	}
-	if DB_PORT == "" {
-		DB_PORT = os.Getenv("DB_PORT")
-		log.Printf("DEBUG - DB_PORT : %v", DB_PORT)
+	if USER_MGMT_DB_PORT == "" {
+		USER_MGMT_DB_PORT = os.Getenv("USER_MGMT_DB_PORT")
 	}
-	if DB_PASS == "" {
-		DB_PASS = os.Getenv("DB_PASS")
-		log.Printf("DEBUG - DB_PASS : %v", DB_PASS)
+	if USER_MGMT_DB_PASS == "" {
+		USER_MGMT_DB_PASS = os.Getenv("USER_MGMT_DB_PASS")
 	}
-	if DB_USER == "" {
-		DB_USER = os.Getenv("DB_USER")
-		log.Printf("DEBUG - DB_USER : %v", DB_USER)
+	if USER_MGMT_DB_USER == "" {
+		USER_MGMT_DB_USER = os.Getenv("USER_MGMT_DB_USER")
 	}
-	if ENV == "" {
-		ENV = os.Getenv("ENV")
-		log.Printf("DEBUG - ENV : %v", ENV)
+	if USER_MGMT_ENV == "" {
+		USER_MGMT_ENV = os.Getenv("USER_MGMT_ENV")
 	}
 	if USER_MGMT_APP_PORT == "" {
 		USER_MGMT_APP_PORT = os.Getenv("USER_MGMT_APP_PORT")
-		log.Printf("DEBUG - USER_MGMT_APP_PORT : %v", USER_MGMT_APP_PORT)
 	}
-	if USER_MGMT_APP_PORT == "" || ENV == "" || DB_HOST == "" || DB_NAME == "" || DB_PORT == "" || DB_PASS == "" || DB_USER == "" {
+	if USER_MGMT_APP_PORT == "" || USER_MGMT_ENV == "" || USER_MGMT_DB_HOST == "" || USER_MGMT_DB_NAME == "" || USER_MGMT_DB_PORT == "" || USER_MGMT_DB_PASS == "" || USER_MGMT_DB_USER == "" {
 		log.Fatal("Missing environment variables")
 	}
 }
