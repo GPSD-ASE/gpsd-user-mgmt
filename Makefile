@@ -3,9 +3,9 @@ NAMESPACE = gpsd
 DEPLOYMENT = gpsd-user-mgmt
 SERVICE_NAME = $(DEPLOYMENT)
 IMAGE_NAME = $(NAMESPACE)/$(DEPLOYMENT)
-CHART_DIRECTORY = helms
+CHART_DIRECTORY = helm
 LOCAL_CHART_NAME = $(shell ls /tmp/$(DEPLOYMENT)-*.tgz)
-LOCAL_INDEX_FILE = index.yaml
+LOCAL_INDEX_FILE = /tmp/index.yaml
 REMOTE_CHART_REPOSITORY = gpsd-ase.github.io
 
 # Use `make develop` for local testing
@@ -38,11 +38,11 @@ clean:
 
 gh-pages-publish:
 	@echo "Publishing Helm chart for $(SERVICE_NAME) to GitHub Pages..."
-	rm -rf /tmp/$(LOCAL_CHART_NAME) /tmp/$(LOCAL_INDEX_FILE)
+	rm -rf $(LOCAL_CHART_NAME) $(LOCAL_INDEX_FILE)
 	helm package ./$(CHART_DIRECTORY) -d /tmp
 	helm repo index /tmp --url https://$(REMOTE_CHART_REPOSITORY)/$(SERVICE_NAME)/ --merge /tmp/index.yaml
 	git checkout gh-pages
-	cp  /tmp/$(LOCAL_CHART_NAME) /tmp/$(LOCAL_INDEX_FILE) .
+	cp  $(LOCAL_CHART_NAME) $(LOCAL_INDEX_FILE) .
 	git add .
 	git commit -m "fix: commit to update GitHub Pages"
 	git push origin gh-pages -f
