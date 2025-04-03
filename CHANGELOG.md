@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.4] - 2025-04-03
+## [0.1.5] - 2025-04-03
 
 
 ### Fixed
-436cb8c fix: incorrect git secrets in pipeline
+b1b62df fix: incorrect location of dockerfile
 
