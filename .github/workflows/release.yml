@@ -125,6 +125,8 @@ jobs:
           tags: |
             gpsd/gpsd-user-mgmt:latest
             gpsd/gpsd-user-mgmt:v${{ needs.check-version.outputs.new_version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       
       - name: Scan image for vulnerabilities
         uses: aquasecurity/trivy-action@master
