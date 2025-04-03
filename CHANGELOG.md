@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.5] - 2025-04-03
+## [0.1.6] - 2025-04-03
 
 
 ### Fixed
-b1b62df fix: incorrect location of dockerfile
+39ff6d1 fix: go.mod go.sum incorrect path copy in dockerfile
 
