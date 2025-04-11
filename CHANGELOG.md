@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.14] - 2025-04-11
+## [0.1.15] - 2025-04-11
 
 
 ### Fixed
-6bb997f fix: correctly output new version during bump
+63c9045 fix: unify json payload naming
 
