@@ -3,12 +3,12 @@ entries:
   gpsd-user-mgmt:
   - apiVersion: v2
     appVersion: 1.0.0
-    created: "2025-04-11T13:48:00.411013233Z"
+    created: "2025-04-11T13:51:01.706580798Z"
     description: A Helm chart for deploying the GPSD User Management service.
-    digest: 413a77ee7296fb9b29cb61565cddf4736bf39ebccf36f0729cba24676a653b95
+    digest: 75306bbc7e5b3f1cd90cfba0a49b6012785d7375d6e80b19820968cf7877593a
     name: gpsd-user-mgmt
     type: application
     urls:
-    - https://gpsd-ase.github.io/gpsd-user-mgmt/gpsd-user-mgmt-0.1.16.tgz
-    version: 0.1.16
-generated: "2025-04-11T13:48:00.410565679Z"
+    - https://gpsd-ase.github.io/gpsd-user-mgmt/gpsd-user-mgmt-0.1.17.tgz
+    version: 0.1.17
+generated: "2025-04-11T13:51:01.706126965Z"
