@@ -16,7 +16,7 @@ type User struct {
 	UserId       int    `json:"id"`
 	UserName     string `json:"username"`
 	Email        string `json:"email"`
-	PasswordHash string `json:"password"`
+	PasswordHash string `json:"password,omitempty"`
 	DeviceID     string `json:"deviceID"`
 	Role         string `json:"role"`
 }
@@ -127,12 +127,12 @@ func GetUsers(limit, offset int) ([]User, error) {
 	return result, nil
 }
 
-func AddUser(user User) (int, error) {
+func (user *User) AddUser() error {
 	roleID := getRoleID(user.Role)
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.PasswordHash), bcrypt.DefaultCost)
 	if err != nil {
-		return -1, err
+		return err
 	}
 	user.PasswordHash = string(hash)
 
@@ -150,12 +150,15 @@ func AddUser(user User) (int, error) {
 	err = row.Scan(
 		&userId,
 	)
+	user.UserId = userId
+	user.Role = getRoleString(roleID)
+	user.PasswordHash = ""
 
 	if err != nil {
-		return userId, err
+		return err
 	}
 
-	return userId, nil
+	return nil
 }
 
 func getRoleID(role string) int {
@@ -169,6 +172,19 @@ func getRoleID(role string) int {
 		roleID = REPORTER
 	}
 	return roleID
+}
+
+func getRoleString(id int) string {
+	var role string
+	switch id {
+	case 2:
+		role = "reporter"
+	case 1:
+		role = "admin"
+	default:
+		role = "reporter"
+	}
+	return role
 }
 
 func UpdateUser(userId int, user User) error {

@@ -98,14 +98,13 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	userID, err := AddUser(user)
+	err = user.AddUser()
 	if err != nil {
 		c.JSON(400, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	user.UserId = userID
 	c.JSON(200, gin.H{
 		"message": "User created successfully",
 		"user":    user,
