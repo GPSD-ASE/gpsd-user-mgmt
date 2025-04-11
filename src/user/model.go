@@ -161,9 +161,9 @@ func AddUser(user User) (int, error) {
 func getRoleID(role string) int {
 	var roleID int
 	switch strings.ToLower(role) {
-	case "reporter":
+	case "2":
 		roleID = REPORTER
-	case "admin":
+	case "1":
 		roleID = ADMIN
 	default:
 		roleID = REPORTER
