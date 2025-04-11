@@ -7,10 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.13] - 2025-04-11
+## [0.1.14] - 2025-04-11
 
 
 ### Fixed
-dce4189 fix: correct versioning
-fc484c5 fix: using wrong port to connect to db
+6bb997f fix: correctly output new version during bump
 
