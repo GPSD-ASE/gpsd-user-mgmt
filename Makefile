@@ -116,3 +116,6 @@ helm-repo-update:
 	helm repo add $(SERVICE_NAME) https://$(REMOTE_CHART_REPOSITORY)/$(SERVICE_NAME)/
 	helm repo update
 	helm repo list
+
+refresh:
+	git fetch -v && git pull origin main --rebase
