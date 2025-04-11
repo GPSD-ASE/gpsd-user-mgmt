@@ -7,9 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.1.17] - 2025-04-11
+## [0.1.18] - 2025-04-11
 
 
 ### Fixed
-dcdacee fix: Update payloads.go
+c23ed67 fix: get role ame correctly
 
