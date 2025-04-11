@@ -17,7 +17,7 @@ func Connect() bool {
 		config.USER_MGMT_DB_USER,
 		config.USER_MGMT_DB_PASS,
 		config.USER_MGMT_DB_HOST,
-		config.USER_MGMT_APP_PORT,
+		config.USER_MGMT_DB_PORT,
 		config.USER_MGMT_DB_NAME,
 	)
 
