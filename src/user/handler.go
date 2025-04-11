@@ -239,6 +239,8 @@ func SignIn(c *gin.Context) {
 		return
 	}
 
+	user.PasswordHash = ""
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Signed in successfully",
 		"user":    user,
