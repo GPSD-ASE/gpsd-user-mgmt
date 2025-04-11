@@ -1,6 +1,6 @@
 package user
 
 type signInRequest struct {
-	Username string `json"user_name"`
-	Password string `json"pass"`
+	Username string `json"username"`
+	Password string `json"password"`
 }
